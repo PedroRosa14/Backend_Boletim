@@ -1,100 +1,113 @@
+import { sql } from "../config/db.js";
 
-// *** CORREÇÃO: Substitua esta URL pela URL da sua API no Render ***
-const URL = "https://boletim-escolar-api.onrender.com";
+export const buscarAlunos = async (req, res) => {
+  try {
+    const alunos = await sql`
+        SELECT * FROM alunos
+        ORDER BY id DESC
+        `;
 
-export const useBoletim = create((set , get) => ({
-    alunos:[],
-    loading:false,
-    error:null,
-    atualAluno: null,
+    console.log("alunos: ", alunos);
+    res.status(200).json({ success: true, data: alunos });
+  } catch (error) {
+    console.error("Erro ao buscar alunos:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno no servidor" });
+  }
+};
 
-    formData: {
-        nome:"",
-        notamat:"",
-        notaport:"",
-        notahist:"",
-        notamedia:"",
-        url:""
-    },
+export const adicionarAluno = async (req, res) => {
+  const { nome, notamat, notaport, notahist, notamedia, url } = req.body;
 
-    setFormData: (formData) => set({formData}),
-    resetForm: () => set({ formData: {nome: "", notamat:"", notaport:"", notahist:"", notamedia:"", url:"" }}),
+  if (!nome || !notamat || !notaport || !notahist || !notamedia || url ) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Preencha todos os campos!" });
+  }
 
-    addAluno: async (e) => {
-        e.preventDefault();
-        set({loading:true});
-        try {
-            const {formData} = get();
-            console.log("URL da requisição POST:", `${URL}/`); // Alterado para "/"
-            await axios.post(`${URL}/`, formData); // Alterado para "/"
-            await get().fetchAlunos();
-            get().resetForm();
-            console.log("Aluno adicionado com sucesso");
-        } catch (error) {
-            console.error("Erro ao adicionar aluno:", error);
-        }finally{
-            set({loading:false})
-        }
-    },
+  try {
+    const novoAluno = await sql`
+        INSERT INTO alunos (nome, notamat, notaport, notahist, notamedia, url)
+        VALUES (${nome}, ${notamat}, ${notaport}, ${notahist}, ${notamedia}, ${url})
+        RETURNING *;
+        `;
+    console.log("Novo aluno adicionado:", novoAluno);
+    res.status(201).json({ success: true, data: novoAluno[0] });
+  } catch (error) {
+    console.error("Erro ao adicionar aluno:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno no servidor" });
+  }
+};
 
-    fetchAlunos: async () => {
-        set({loading:true});
-        try {
-            const response = await axios.get(`${URL}/`) // Alterado para "/"
-            set({alunos:response.data.data});
-            set({error: null});
-        } catch (error) {
-            console.error("Erro ao buscar alunos:", error);
-            if (error.response && error.response.status === 429) {
-                set({error: "Limite de requests excedido. Tente novamente mais tarde."});
-            } else {
-                set({error: "Erro interno do servidor ao buscar alunos."});
-            }
-        }finally{
-            set({loading:false})
-        }
-    },
+export const buscarAlunoId = async (req, res) => {
+  const { id } = req.params;
 
-    fetchAlunoById: async (id) => {
-        set({loading:true});
-        try {
-            const response = await axios.get(`${URL}/${id}`); // Alterado para "/${id}"
-            set({atualAluno: response.data.data, formData: response.data.data, error:null,});
-        } catch (error) {
-            console.error("Erro ao buscar aluno por ID:", error);
-            set({error: "Erro ao buscar aluno. Verifique o ID."});
-            set({atualAluno: null, formData: get().resetForm()});
-        }finally{
-            set({loading:false})
-        }
-    },
+  try {
+    const aluno = await sql`
+        SELECT * FROM alunos WHERE id =${id}
+        `;
 
-    deleteAluno: async (id) => {
-        set({loading:true});
-        try {
-            await axios.delete(`${URL}/${id}`); // Alterado para "/${id}"
-            set(prev => ({ alunos: prev.alunos.filter(aluno => aluno.id !== id)}));
-            console.log("Aluno deletado com sucesso");
-        } catch (error) {
-            console.error("Erro ao deletar aluno:", error);
-        }finally{
-            set({loading:false})
-        }
-    },
+    res.status(200).json({ success: true, data: aluno[0] });
+  } catch (error) {
+    console.error("Erro ao buscar aluno:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno no servidor" });
+  }
+};
 
-    updateAluno: async (id, dadosDoAluno) => {
-        set({ loading: true });
-        try {
-            const response = await axios.put(`${URL}/${id}`, dadosDoAluno); // Alterado para "/${id}"
-            set({ atualAluno: response.data.data });
-            await get().fetchAlunos();
-            console.log("Aluno atualizado com sucesso:", response.data.data);
-            return response.data.data;
-        } catch (error) {
-            console.error("Erro ao atualizar aluno:", error);
-            throw error;
-        } finally {
-            set({ loading: false });
-        }
-    },
-}));
+export const atualizarAluno = async (req, res) => {
+  const { id } = req.params;
+  const { nome, notamat, notaport, notahist, notamedia, url } = req.body;
+
+  try {
+    const alunoAtualizado = await sql`
+        UPDATE  alunos SET nome = ${nome}, notamat = ${notamat}, notaport = ${notaport}, notahist = ${notahist}, notamedia = ${notamedia}, url = ${url}
+        WHERE id = ${id} 
+        RETURNING *
+        `;
+
+    if (alunoAtualizado.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Aluno não encontrado" });
+    }
+
+    res.status(200).json({ success: true, data: alunoAtualizado[0] });
+  } catch (error) {
+    console.error("Erro ao atualizar aluno:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno no servidor" });
+  }
+};
+
+export const deletarAluno = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const alunoDeletado = await sql`
+        DELETE FROM alunos WHERE id = ${id}
+        RETURNING *;
+        `;
+
+    if (alunoDeletado.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "aluno não encontrado" });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: alunoDeletado[0],
+    });
+  } catch (error) {
+    console.error("Erro ao deletar aluno:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno no servidor" });
+  }
+};

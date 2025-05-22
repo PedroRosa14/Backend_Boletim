@@ -2,7 +2,8 @@ import express from "express";
 import {
   buscarAlunos,
   buscarAlunoId,
-  adicionarAluno,  atualizarAluno,
+  adicionarAluno,  
+  atualizarAluno,
   deletarAluno,
 } from "../controller/alunoController.js";
 
