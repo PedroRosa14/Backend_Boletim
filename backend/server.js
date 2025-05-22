@@ -1,7 +1,6 @@
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
-import cors from "cors";
 import dotenv from "dotenv";
 
 import alunoRoutes from "./routes/alunoRoutes.js";
@@ -13,19 +12,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuração do CORS
-app.use(cors({
-  origin: 'https://your-frontend.vercel.app', // Substitua pela URL do seu frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-}));
-
 // Middlewares
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 
 // Rotas
-app.use("/api/alunos", alunoRoutes);
+app.use("/", alunoRoutes);
 
 // Configuração do Swagger (DEVE VIR APÓS A DEFINIÇÃO DAS ROTAS)
 setupSwagger(app);

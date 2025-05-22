@@ -2,8 +2,7 @@ import express from "express";
 import {
   buscarAlunos,
   buscarAlunoId,
-  adicionarAluno,
-  atualizarAluno,
+  adicionarAluno,  atualizarAluno,
   deletarAluno,
 } from "../controller/alunoController.js";
 
@@ -11,7 +10,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/alunos:
+ * /:
  *   get:
  *     summary: Lista todos os alunos
  *     tags: [Alunos]
@@ -23,7 +22,7 @@ router.get("/", buscarAlunos);
 
 /**
  * @swagger
- * /api/alunos/{id}:
+ * /{id}:
  *   get:
  *     summary: Busca um aluno pelo ID
  *     tags: [Alunos]
@@ -44,7 +43,7 @@ router.get("/:id", buscarAlunoId);
 
 /**
  * @swagger
- * /api/alunos:
+ * /
  *   post:
  *     summary: Adiciona um novo aluno
  *     tags: [Alunos]
@@ -78,7 +77,7 @@ router.post("/", adicionarAluno);
 
 /**
  * @swagger
- * /api/alunos/{id}:
+ * /{id}:
  *   put:
  *     summary: Atualiza um aluno existente
  *     tags: [Alunos]
@@ -116,7 +115,7 @@ router.put("/:id", atualizarAluno);
 
 /**
  * @swagger
- * /api/alunos/{id}:
+ * /{id}:
  *   delete:
  *     summary: Deleta um aluno
  *     tags: [Alunos]

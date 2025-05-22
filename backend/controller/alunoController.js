@@ -18,7 +18,7 @@ export const buscarAlunos = async (req, res) => {
 };
 
 export const adicionarAluno = async (req, res) => {
-  const { nome, notamat, notaport, notahist, notamedia, url } = req.body;
+  const { nome, notamat, notaport, notahist, notamedia } = req.body;
 
   if (!nome || !notamat || !notaport || !notahist || !notamedia ) {
     return res
