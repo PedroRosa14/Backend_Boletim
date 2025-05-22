@@ -20,7 +20,7 @@ export const useBoletim = create((set , get) => ({
     setFormData: (formData) => set({formData}),
     resetForm: () => set({ formData: {nome: "", notamat:"", notaport:"", notahist:"", notamedia:"", url:"" }}),
 
-    buscarAlunos: async (e) => {
+    addAluno: async (e) => {
         e.preventDefault();
         set({loading:true});
         try {
@@ -37,7 +37,7 @@ export const useBoletim = create((set , get) => ({
         }
     },
 
-    adicionarAluno: async () => {
+    fetchAlunos: async () => {
         set({loading:true});
         try {
             const response = await axios.get(`${URL}/`) // Alterado para "/"
@@ -55,7 +55,7 @@ export const useBoletim = create((set , get) => ({
         }
     },
 
-    buscarAlunoId: async (id) => {
+    fetchAlunoById: async (id) => {
         set({loading:true});
         try {
             const response = await axios.get(`${URL}/${id}`); // Alterado para "/${id}"
@@ -69,7 +69,7 @@ export const useBoletim = create((set , get) => ({
         }
     },
 
-    deletarAluno: async (id) => {
+    deleteAluno: async (id) => {
         set({loading:true});
         try {
             await axios.delete(`${URL}/${id}`); // Alterado para "/${id}"
@@ -82,7 +82,7 @@ export const useBoletim = create((set , get) => ({
         }
     },
 
-    atualizarAluno: async (id, dadosDoAluno) => {
+    updateAluno: async (id, dadosDoAluno) => {
         set({ loading: true });
         try {
             const response = await axios.put(`${URL}/${id}`, dadosDoAluno); // Alterado para "/${id}"
