@@ -1,9 +1,10 @@
+// server.js
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 
-import alunoRoutes from "./routes/alunoRoutes.js";
+import alunoRoutes from "./routes/alunoRoutes.js"; // Certifique-se que este caminho está correto
 import { sql } from "./config/db.js";
 
 dotenv.config();
@@ -17,9 +18,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 // Rotas
-app.use("/alunos", alunoRoutes);
-
-
+app.use("/", alunoRoutes); // <--- MUDE AQUI PARA MONTAR NA RAIZ
 
 // Criação da tabela no banco se não existir
 async function startdb() {
@@ -35,7 +34,6 @@ async function startdb() {
         url VARCHAR(255)
       )
     `;
-
     console.log("Banco de dados conectado com sucesso.");
   } catch (error) {
     console.error("Erro ao conectar ao banco de dados:", error);
