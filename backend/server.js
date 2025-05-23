@@ -19,8 +19,7 @@ app.use(morgan("dev"));
 // Rotas
 app.use("/alunos", alunoRoutes);
 
-// Configuração do Swagger (DEVE VIR APÓS A DEFINIÇÃO DAS ROTAS)
-setupSwagger(app);
+
 
 // Criação da tabela no banco se não existir
 async function startdb() {
