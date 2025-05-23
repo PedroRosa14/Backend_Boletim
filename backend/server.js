@@ -18,7 +18,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 // Rotas
-app.use("/", alunoRoutes);
+app.use("/api/alunos", alunoRoutes);
 
 // Configuração do Swagger (DEVE VIR APÓS A DEFINIÇÃO DAS ROTAS)
 setupSwagger(app);
