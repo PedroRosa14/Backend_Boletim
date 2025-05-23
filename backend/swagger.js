@@ -15,12 +15,13 @@ const options = {
       description: "Documentação da API com Swagger",
     },
   },
-  apis: [path.join(__dirname, './routes/*.js')], // <--- VERIFIQUE ESTE CAMINHO!!!
+  apis: [path.join(__dirname, './routes/*.js')] // Ajuste o '../' conforme necessário
 };
 
+
 const swaggerSpec = swaggerJSDoc(options);
-console.log(JSON.stringify(swaggerSpec, null, 2)); // Para debug: veja a especificação gerada
+console.log(JSON.stringify(swaggerSpec, null, 2)); // <--- ADICIONE ESTA LINHA
 
 export const setupSwagger = (app) => {
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };

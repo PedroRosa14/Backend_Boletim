@@ -1,11 +1,11 @@
-// server.js
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 
-import alunoRoutes from "./routes/alunoRoutes.js"; // Certifique-se que este caminho está correto
+import alunoRoutes from "./routes/alunoRoutes.js";
 import { sql } from "./config/db.js";
+import { setupSwagger } from "./swagger.js"; // Importe setupSwagger no topo
 
 dotenv.config();
 
@@ -18,7 +18,10 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 // Rotas
-app.use("/", alunoRoutes); // <--- MUDE AQUI PARA MONTAR NA RAIZ
+app.use("/", alunoRoutes);
+
+// Configuração do Swagger (DEVE VIR APÓS A DEFINIÇÃO DAS ROTAS)
+setupSwagger(app);
 
 // Criação da tabela no banco se não existir
 async function startdb() {
@@ -34,6 +37,7 @@ async function startdb() {
         url VARCHAR(255)
       )
     `;
+
     console.log("Banco de dados conectado com sucesso.");
   } catch (error) {
     console.error("Erro ao conectar ao banco de dados:", error);
