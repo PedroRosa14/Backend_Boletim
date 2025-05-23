@@ -2,6 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import cors from 'cors';
 
 import alunoRoutes from "./routes/alunoRoutes.js";
 import { sql } from "./config/db.js";
@@ -12,6 +13,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
+app.use(cors({
+  origin: 'https://ls2nml4-anonymous-8081.exp.direct', // Substitua pela URL do seu frontend no Render quando for para produção
+}));
+
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
