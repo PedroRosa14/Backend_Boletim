@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 
 import alunoRoutes from "./routes/alunoRoutes.js";
 import { sql } from "./config/db.js";
-import { setupSwagger } from "./swagger.js"; // Importe setupSwagger no topo
 
 dotenv.config();
 
@@ -20,8 +19,7 @@ app.use(morgan("dev"));
 // Rotas
 app.use("/", alunoRoutes);
 
-// Configuração do Swagger (DEVE VIR APÓS A DEFINIÇÃO DAS ROTAS)
-setupSwagger(app);
+
 
 // Criação da tabela no banco se não existir
 async function startdb() {
